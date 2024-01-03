@@ -1,43 +1,28 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-contract FreeVoting {
-    struct Response {
-        string response;
-        uint256 voteCount;
-    }
-
-    string public question;
-    Response[] public responses;
+contract VotingTime {
+    address adressVoting;
     address owner;
     mapping(address => bool) public voters;
 
     uint256 public vote_start_date;
     uint256 public vote_end_date;
 
-    constructor(string memory _question ,string[] memory _availableResponses, uint256 _durationInMinutes) {
-        question = _question;
-        for (uint256 i = 0; i < _availableResponses.length; i++) {
-            responses.push(Response({
-                response: _availableResponses[i],
-                voteCount: 0
-            }));
-        }
+    constructor(uint256 _durationInMinutes, address _addressVoting) {
+        adressVoting = _addressVoting;
         owner = msg.sender;
         vote_start_date = block.timestamp;
         vote_end_date = block.timestamp + (_durationInMinutes * 1 minutes);
     }
 
     function vote(uint256 _responseIndex) public {
+        Voting voting = Voting(adressVoting);
         require(!voters[msg.sender], "You have already voted");
-        require(_responseIndex < responses.length, "Invalid response index");
+        require(_responseIndex < voting.getAllVotesForResponses().length, "Invalid response index");
 
-        responses[_responseIndex].voteCount++;
+        voting.incrementVote(_responseIndex);
         voters[msg.sender] = true;
-    }
-
-    function getAllVotesForResponses() public view returns (Response[] memory){
-        return responses;
     }
 
     function getVotingStatus() public view returns (bool) {
@@ -50,5 +35,33 @@ contract FreeVoting {
             return 0;
         }
         return vote_end_date - block.timestamp;
+    }
+}
+
+contract Voting {
+    struct Response {
+        string response;
+        uint256 voteCount;
+    }
+
+    string public question;
+    Response[] public responses;
+
+    constructor(string memory _question ,string[] memory _availableResponses) {
+        question = _question;
+        for (uint256 i = 0; i < _availableResponses.length; i++) {
+            responses.push(Response({
+                response: _availableResponses[i],
+                voteCount: 0
+            }));
+        }
+    }
+
+    function getAllVotesForResponses() external  view returns (Response[] memory){
+        return responses;
+    }
+
+    function incrementVote(uint256 _responseIndex) external {
+        responses[_responseIndex].voteCount++;
     }
 }
