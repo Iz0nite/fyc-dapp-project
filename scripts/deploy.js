@@ -1,7 +1,13 @@
 import hre from "hardhat";
 
-const freeVotingContract = await hre.ethers.deployContract("FreeVoting");
+const freeVotingContract = await hre.ethers.getContractFactory("FreeVoting");
 
-await freeVotingContract.waitForDeployment();
+const deployedContract = await freeVotingContract.deploy(
+	"Qui est le plus beau ?",
+	["Moi", "Toi", "Lui", "Elle"],
+	300
+)
 
-console.log("freeVoting deployed to:", freeVotingContract.target);
+await deployedContract.waitForDeployment();
+
+console.log("freeVoting deployed to:", deployedContract.target);
