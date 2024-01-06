@@ -15,7 +15,7 @@ contract FreeVoting {
     uint256 public vote_start_date;
     uint256 public vote_end_date;
 
-    constructor(string _question ,string[] memory _availableResponses, uint256 _durationInMinutes) {
+    constructor(string memory _question ,string[] memory _availableResponses, uint256 _durationInMinutes) {
         question = _question;
         for (uint256 i = 0; i < _availableResponses.length; i++) {
             responses.push(Response({

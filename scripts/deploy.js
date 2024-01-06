@@ -1,7 +1,13 @@
 import hre from "hardhat";
 
-const freeVotingContract = await hre.ethers.deployContract("FreeVoting");
+const freeVotingContract = await hre.ethers.getContractFactory("FreeVoting");
 
-await freeVotingContract.waitForDeployment();
+const deployedContract = await freeVotingContract.deploy(
+	"Qui gagnera les prochaines élections présidentielles ?",
+	["Marie Le Pen", "Jordan Bardella", "Jean-Luc Mélenchon", "Edouard Philippe", "Jean Lassalle", "Gabriel Attal"],
+	1
+)
 
-console.log("freeVoting deployed to:", freeVotingContract.target);
+await deployedContract.waitForDeployment();
+
+console.log("freeVoting deployed to:", deployedContract.target);

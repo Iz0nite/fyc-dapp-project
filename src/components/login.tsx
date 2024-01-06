@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { Button } from "antd"
 
 interface LoginProps {
-  setIsConnected: (value: boolean) => void
+  setIsConnected: (value: boolean) => void,
   setAccount: (value: ethers.JsonRpcSigner) => void
 }
 
@@ -29,6 +29,6 @@ export function Login ({ setIsConnected, setAccount }: LoginProps) {
   }
 
   return (
-    <Button type="primary" onClick={connectToMetamask}>Login</Button>
+    <Button type="primary" className="border-white" onClick={connectToMetamask}>Login</Button>
   )
 }
