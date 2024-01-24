@@ -6,9 +6,9 @@ contract FreeVoting {
         string response;
         uint256 voteCount;
     }
+    Response[] public responses;
 
     string public question;
-    Response[] public responses;
     address owner;
     mapping(address => bool) public voters;
 

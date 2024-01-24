@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { Button, Select } from "antd"
+import { Alert, Button, Select } from "antd"
 import FreeVoting from "../artifacts/contracts/FreeVoting.sol/FreeVoting.json";
 import { useState } from "react";
 
@@ -32,8 +32,24 @@ export function FreeVotingApp ({account} : {account: ethers.JsonRpcSigner}) {
 			const transaction = await contract.vote(selectedAnswer)
 			console.log("Transaction : ", transaction)
 			transaction.wait()
+			return (
+				<Alert
+					message="Transaction successfully sent !"
+					description={"You can check it on Etherscan. \n" + transaction.hash}
+					type="success"
+					showIcon
+				/>
+			);
 		} catch (error) {
 			console.error("Error during transaction", error);
+			return (
+				<Alert
+					message="Transaction failed !"
+					description="Please try again."
+					type="error"
+					showIcon
+				/>
+			);
 		}
 	}
 
@@ -42,6 +58,13 @@ export function FreeVotingApp ({account} : {account: ethers.JsonRpcSigner}) {
 			{votingStatus && answers && remainingTime
 				?
 				<>
+					<p>
+						Nombre de personnes à avoir voté : {
+							answers.reduce((acc: number, answer: string) => {
+								return acc + parseInt(answer[1]);
+							}, 0)
+					}
+					</p>
 					{votingStatus ? <h3>You have {JSON.parse(remainingTime)} min to vote !</h3> : <h1>Voting is over !</h1>}
 					<h1>Question</h1>
 					<p>{question}</p>
